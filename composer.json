@@ -1,0 +1,23 @@
+{
+  "name": "veasin/nx-io",
+  "description": "IO for nx",
+  "homepage": "https://github.com/veasin/nx-io",
+  "type": "framework",
+  "authors": [
+    {
+      "name": "Vea",
+      "homepage": "https://www.uper.net",
+      "email": "vea@live.cn"
+    }
+  ],
+  "require": {
+    "php": ">=8.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "nx\\": [
+        "src/"
+      ]
+    }
+  }
+}
