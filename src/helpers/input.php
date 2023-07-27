@@ -36,11 +36,12 @@ class input implements \ArrayAccess, \Countable, \IteratorAggregate{
 			$this->app?->runtime("      ->{$from}[{$arguments[0]}]");
 			if('uri' === $from) return $this->data['params'][$arguments[0]];
 			elseif('method' === $from) return $this->data[$from] === strtolower($arguments[0]);
-			return $this->data[$from][$arguments[0]] ?? null;
+			$data =$this[$from];
+			return $data[$arguments[0]] ?? null;
 		} else return null;//todo error ?
 	}
 	public function &offsetGet($offset): mixed{
-		if(!isset($this[$offset])){
+		if(!isset($this->data[$offset])){
 			switch($offset){
 				case 'ip':
 					if(!empty($_SERVER['HTTP_CLIENT_IP'])) $this->data['ip'] = $_SERVER['HTTP_CLIENT_IP'];
