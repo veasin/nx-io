@@ -9,7 +9,7 @@ use nx\helpers\output;
  */
 trait cli{
 	public ?output $out = null;
-	public function render_cli(output $out, callable $callback = null): void{
+	protected function render_cli(output $out, callable $callback = null): void{
 		//todo exit code
 		$r = $out();
 		if(null !== $callback) $callback($r);
@@ -17,7 +17,7 @@ trait cli{
 	}
 	protected function nx_parts_output_cli(): ?\Generator{
 		if(!$this->out) $this->out = new output();
-		$this->out->setRender([$this, "render_cli"]);
+		$this->out->setRender($this->render_cli(...));
 		yield;
 		$this->out = null;
 	}

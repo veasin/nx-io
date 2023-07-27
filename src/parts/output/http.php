@@ -8,18 +8,17 @@ use nx\helpers\output;
 /**
  * @method void runtime(string $info)
  * @method mixed out()
- *
  */
 trait http{
 	public ?output $out = null;
-	public function render_http(output $out, callable $callback = null): void{
+	protected function render_http(output $out, callable $callback = null): void{
 		$r = $out();
 		$status = $out->status ?? (null !== $r ? 200 : 404);//todo 需要区分是out内容还是额外的http status、message和header
 		$message = $out->message ?? status::message($status);
 		$this->runtime("status: $status");
 		header(($_SERVER["SERVER_PROTOCOL"] ?? "HTTP/1.1") . ' ' . $message);//HTTP/1.1
 		header_remove('X-Powered-By');
-		$headers = $out->app['output:header'] ?? [];
+		$headers = $out->header() ?? [];
 		$headers['NX'] = 'Vea 2005-2023';
 		foreach($headers as $header => $value){
 			if(is_int($header)){
@@ -42,7 +41,7 @@ trait http{
 	}
 	protected function nx_parts_output_http(): ?\Generator{
 		if(!$this->out) $this->out = new output();
-		$this->out->setRender([$this, 'render_http']);
+		$this->out->setRender($this->render_http(...));
 		yield;
 		$this->out = null;
 	}

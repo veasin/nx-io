@@ -4,14 +4,29 @@ namespace nx\helpers;
 
 use nx\parts\o2;
 
+/**
+ * @method header(string[] $headers)
+ */
 class output implements \ArrayAccess, \Countable, \IteratorAggregate{
 	use o2;
 
 	private mixed $_render = null;
 	private mixed $_render_callback = null;
 	private bool $_has_render = false;
+	protected mixed $app;
 	public ?int $status;
 	public ?string $message;
+	public function __construct($app=null){
+		$this->app =$app;
+	}
+	public function __call(string $name, array $arguments){
+		$count =count($arguments);
+		if(0===$count){
+			return $this->app["output:$name"];
+		} elseif( 1===$count){
+			$this->app["output:$name"] =$arguments[0];
+		}
+	}
 	public function status(int $status, string $message = null): void{
 		$this->status = $status;
 		$this->message = $message;

@@ -12,13 +12,14 @@ use nx\helpers\output;
 
 /**
  * @method mixed out()
+ * @method header($headers=[])
  */
 trait rest{
 	use http;
 
 	protected function nx_parts_output_rest(): ?\Generator{
 		if(!$this->out) $this->out = new output();
-		$this->out->setRender([$this, 'render_http'], function($r){
+		$this->out->setRender($this->render_http(...), function($r){
 			if(!is_null($r)){
 				header('Content-Type:application/json; charset=UTF-8');
 				try{
