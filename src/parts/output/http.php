@@ -10,16 +10,17 @@ use nx\helpers\output;
  * @method mixed out()
  */
 trait http{
+	use status;
 	public ?output $out = null;
 	protected function render_http(output $out, callable $callback = null): void{
 		$r = $out();
 		$status = $out->status ?? (null !== $r ? 200 : 404);//todo 需要区分是out内容还是额外的http status、message和header
-		$message = $out->message ?? status::message($status);
-		$this->runtime("status: $status");
+		$message ="$status " . (!empty($out->message) ? $out->message : (static::$http_code_messages[$status] ?? ''));
+		$this->runtime("status: $message");
 		header(($_SERVER["SERVER_PROTOCOL"] ?? "HTTP/1.1") . ' ' . $message);//HTTP/1.1
 		header_remove('X-Powered-By');
 		$headers = $out->header() ?? [];
-		$headers['NX'] = 'Vea 2005-2023';
+		$headers['NX'] = 'V 2005-2023';
 		foreach($headers as $header => $value){
 			if(is_int($header)){
 				if(is_array($value)){
@@ -29,9 +30,6 @@ trait http{
 				}
 				elseif(is_string($value) || $value instanceof \Stringable){
 					header($value);//['Status: 200']
-				}
-				else{
-					//to do nothing...
 				}
 			}
 			else header($header . ': ' . $value);

@@ -14,10 +14,11 @@ use nx\parts\o2;
  */
 class input implements \ArrayAccess, \Countable, \IteratorAggregate{
 	use o2;
+
 	protected mixed $app;
 	private array $bodyContentTypeParseMap = [];
-	public function __construct(mixed $app=null){
-		$this->app =$app;
+	public function __construct(mixed $app = null){
+		$this->app = $app;
 		if(PHP_SAPI === 'cli'){
 			$argv = ($_SERVER['argv'] ?? []) + [];
 			array_shift($argv);
@@ -36,9 +37,10 @@ class input implements \ArrayAccess, \Countable, \IteratorAggregate{
 			$this->app?->runtime("      ->{$from}[{$arguments[0]}]");
 			if('uri' === $from) return $this->data['params'][$arguments[0]];
 			elseif('method' === $from) return $this->data[$from] === strtolower($arguments[0]);
-			$data =$this[$from];
+			$data = $this[$from];
 			return $data[$arguments[0]] ?? null;
-		} else return null;//todo error ?
+		}
+		else return null;//todo error ?
 	}
 	public function &offsetGet($offset): mixed{
 		if(!isset($this->data[$offset])){
@@ -79,11 +81,9 @@ class input implements \ArrayAccess, \Countable, \IteratorAggregate{
 				case 'body':
 					$content_type = $this->header('content-type');
 					if($content_type){
-						$content_type = strtolower(trim(str_contains($content_type, ';') ? explode(';', $content_type)[0] : $content_type
-							)
-						);
+						$content_type = strtolower(trim(str_contains($content_type, ';') ? explode(';', $content_type)[0] : $content_type));
 						if(array_key_exists($content_type, $this->bodyContentTypeParseMap) && is_callable($this->bodyContentTypeParseMap[$content_type])){
-							$this->data['body'] = call_user_func($this->bodyContentTypeParseMap[$content_type], $this->data['input']);
+							$this->data['body'] = call_user_func($this->bodyContentTypeParseMap[$content_type], $this['input']);
 						}
 						else{
 							switch($content_type){//触发header更新
@@ -91,12 +91,12 @@ class input implements \ArrayAccess, \Countable, \IteratorAggregate{
 									$this->data['body'] = $_POST;
 									break;
 								case 'application/x-www-form-urlencoded':
-									parse_str($this->data['input'], $vars);
+									parse_str($this['input'], $vars);
 									$this->data['body'] = $vars;
 									break;
 								case 'application/json':
 									try{
-										$this->data['body'] = json_decode($this->data['input'], true, 512, JSON_THROW_ON_ERROR);
+										$this->data['body'] = json_decode($this['input'], true, 512, JSON_THROW_ON_ERROR);
 									}catch(\JsonException){
 										$this->data['body'] = [];
 									}
@@ -104,7 +104,7 @@ class input implements \ArrayAccess, \Countable, \IteratorAggregate{
 								case 'text/plain':
 								case 'text/html':
 								default:
-									$this->data['body'] = $this->data['input'];
+									$this->data['body'] = $this['input'];
 									break;
 							}
 						}

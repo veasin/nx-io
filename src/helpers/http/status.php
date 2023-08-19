@@ -6,7 +6,7 @@ namespace nx\helpers\http;
  * @see https://www.iana.org/assignments/http-status-codes/http-status-codes.xhtml
  *
  */
-final class status{
+trait status{
 	/*
 	Method
 	get 获取 200 成功
@@ -120,7 +120,7 @@ final class status{
 
 
 	 */
-	public static array $Message = [
+	public static array $http_code_messages = [
 		//用于传达连接状态或请求进度的临时响应 在完成请求的操作并发送最终响应之前
 		100 => "Continue", //[RFC9110, Section 15.2.1] 已接受部份，还需要后续再继续
 		101 => "Switching Protocols", //[RFC9110, Section 15.2.2] 切换协议
@@ -190,7 +190,4 @@ final class status{
 		510 => "Not Extended (OBSOLETED)", //[RFC2774][status-change-http-experiments-to-historic]
 		511 => "Network Authentication Required", //[RFC6585]
 	];
-	public static function message(int $status): string{
-		return "$status " . (self::$Message[$status] ?? '');
-	}
 }

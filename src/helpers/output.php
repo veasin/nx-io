@@ -5,7 +5,7 @@ namespace nx\helpers;
 use nx\parts\o2;
 
 /**
- * @method header(string[] $headers)
+ * @method header(string[] $headers = null)
  */
 class output implements \ArrayAccess, \Countable, \IteratorAggregate{
 	use o2;
@@ -16,16 +16,13 @@ class output implements \ArrayAccess, \Countable, \IteratorAggregate{
 	protected mixed $app;
 	public ?int $status;
 	public ?string $message;
-	public function __construct($app=null){
-		$this->app =$app;
+	public function __construct($app = null){
+		$this->app = $app;
 	}
 	public function __call(string $name, array $arguments){
-		$count =count($arguments);
-		if(0===$count){
-			return $this->app["output:$name"];
-		} elseif( 1===$count){
-			$this->app["output:$name"] =$arguments[0];
-		}
+		$count = count($arguments);
+		if(0 === $count) return $this->app["output:$name"];
+		elseif(1 === $count) $this->app["output:$name"] = $arguments[0];
 	}
 	public function status(int $status, string $message = null): void{
 		$this->status = $status;
@@ -40,13 +37,10 @@ class output implements \ArrayAccess, \Countable, \IteratorAggregate{
 	}
 	public function render(): string{
 		$this->_has_render = true;
-		$r = '';
-		if($this->_render){
-			ob_start();
-			call_user_func($this->_render, $this, $this->_render_callback);
-			$r = ob_get_clean();
-		}
-		return $r;
+		if(null === $this->_render) return '';
+		ob_start();
+		call_user_func($this->_render, $this, $this->_render_callback);
+		return ob_get_clean();
 	}
 	public function __toString(): string{
 		return $this->render();
