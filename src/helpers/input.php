@@ -34,7 +34,7 @@ class input implements \ArrayAccess, \Countable, \IteratorAggregate{
 			return $this[$from];
 		}
 		elseif(1 === $count){
-			$this->app?->runtime("      ->{$from}[{$arguments[0]}]");
+			$this->app?->runtime("    ->{$from}[{$arguments[0]}]", 'in');
 			if('uri' === $from) return $this->data['params'][$arguments[0]];
 			elseif('method' === $from) return $this->data[$from] === strtolower($arguments[0]);
 			$data = $this[$from];
