@@ -16,7 +16,7 @@ trait cli{
 		else echo $r;
 	}
 	protected function nx_parts_output_cli(): ?\Generator{
-		if(!$this->out) $this->out = new output();
+		if(!$this->out) $this->out = new output($this);
 		$this->out->setRender($this->render_cli(...));
 		yield;
 		$this->out = null;

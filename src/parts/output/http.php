@@ -20,7 +20,7 @@ trait http{
 		header(($_SERVER["SERVER_PROTOCOL"] ?? "HTTP/1.1") . ' ' . $message);//HTTP/1.1
 		header_remove('X-Powered-By');
 		$headers = $out->header() ?? [];
-		$headers['NX'] = 'V 2005-2023';
+		$headers['NX'] = 'V 2005-'.date('Y');
 		foreach($headers as $header => $value){
 			if(is_int($header)){
 				if(is_array($value)){
@@ -38,7 +38,7 @@ trait http{
 		else echo $r;
 	}
 	protected function nx_parts_output_http(): ?\Generator{
-		if(!$this->out) $this->out = new output();
+		if(!$this->out) $this->out = new output($this);
 		$this->out->setRender($this->render_http(...));
 		yield;
 		$this->out = null;

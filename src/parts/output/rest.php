@@ -18,7 +18,7 @@ trait rest{
 	use http;
 
 	protected function nx_parts_output_rest(): ?\Generator{
-		if(!$this->out) $this->out = new output();
+		if(!$this->out) $this->out = new output($this);
 		$this->out->setRender($this->render_http(...), function($r){
 			if(!is_null($r)){
 				header('Content-Type:application/json; charset=UTF-8');
