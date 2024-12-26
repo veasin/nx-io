@@ -24,15 +24,15 @@ class output implements \ArrayAccess, \Countable, \IteratorAggregate{
 		if(0 === $count) return $this->app["output:$name"];
 		elseif(1 === $count) $this->app["output:$name"] = $arguments[0];
 	}
-	public function status(int $status, string $message = null): void{
+	public function status(int $status, ?string $message = null): void{
 		$this->status = $status;
 		$this->message = $message;
 	}
-	public function setRender(callable $render, callable $callback = null): void{
+	public function setRender(callable $render, ?callable $callback = null): void{
 		$this->_render = $render;
 		$this->_render_callback = $callback;
 	}
-	public function setRenderCallback(callable $callback = null): void{
+	public function setRenderCallback(?callable $callback = null): void{
 		$this->_render_callback = $callback;
 	}
 	public function render(): string{

@@ -12,7 +12,7 @@ use nx\helpers\output;
 trait http{
 	use status;
 	public ?output $out = null;
-	protected function render_http(output $out, callable $callback = null): void{
+	protected function render_http(output $out, ?callable $callback = null): void{
 		$r = $out();
 		$status = $out->status ?? (null !== $r ? 200 : 404);//todo 需要区分是out内容还是额外的http status、message和header
 		$message ="$status " . (!empty($out->message) ? $out->message : (static::$http_code_messages[$status] ?? ''));

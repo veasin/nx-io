@@ -9,7 +9,7 @@ use nx\helpers\output;
  */
 trait cli{
 	public ?output $out = null;
-	protected function render_cli(output $out, callable $callback = null): void{
+	protected function render_cli(output $out, ?callable $callback = null): void{
 		//todo exit code
 		$r = $out();
 		if(null !== $callback) $callback($r);
