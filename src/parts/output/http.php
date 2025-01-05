@@ -2,7 +2,6 @@
 
 namespace nx\parts\output;
 
-use nx\helpers\http\status;
 use nx\helpers\output;
 
 /**
@@ -10,17 +9,16 @@ use nx\helpers\output;
  * @method mixed out()
  */
 trait http{
-	use status;
 	public ?output $out = null;
 	protected function render_http(output $out, ?callable $callback = null): void{
 		$r = $out();
-		$status = $out->status ?? (null !== $r ? 200 : 404);//todo 需要区分是out内容还是额外的http status、message和header
-		$message ="$status " . (!empty($out->message) ? $out->message : (static::$http_code_messages[$status] ?? ''));
-		$this->runtime("status: $message", 'out');
-		header(($_SERVER["SERVER_PROTOCOL"] ?? "HTTP/1.1") . ' ' . $message);//HTTP/1.1
+		$status = $out->status ?? (null !== $r ? 200 : 404);
+		$message = " $status " . (!empty($out->message) ? $out->message : '');
+		$this->runtime("status:$message", 'out');
+		header(($_SERVER["SERVER_PROTOCOL"] ?? "HTTP/1.1") . $message);//HTTP/1.1
 		header_remove('X-Powered-By');
 		$headers = $out->header() ?? [];
-		$headers['NX'] = 'V 2005-'.date('Y');
+		$headers['V'] = '2005-' . date('Y');
 		foreach($headers as $header => $value){
 			if(is_int($header)){
 				if(is_array($value)){

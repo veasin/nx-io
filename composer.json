@@ -19,5 +19,8 @@
         "src/"
       ]
     }
+  },
+  "require-dev": {
+    "pestphp/pest": ">=3.7"
   }
 }

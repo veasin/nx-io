@@ -8,21 +8,41 @@
 
 namespace nx\parts;
 trait o2{
-	public mixed $data = null;
+	protected mixed $data = null;
 	//IteratorAggregate
+	/**
+	 * @inheritDoc
+	 */
 	public function getIterator(): \ArrayIterator{ return new \ArrayIterator($this->data); } //foreach($this as ..)
 	//Countable
+	/**
+	 * @inheritDoc
+	 */
 	public function count(): int{ return count($this->data ?? []); } //->count($this)
 	//ArrayAccess
+	/**
+	 * @inheritDoc
+	 */
 	public function offsetSet($offset, $value): void{ $this->data[$offset] = $value; }   //$this['xx'] ='xx'
-	public function &offsetGet($offset): mixed{ return $this->data[$offset]; }           //=$this['zz']
+	/**
+	 * @inheritDoc
+	 */
+	public function &offsetGet($offset): mixed{
+		if(!isset($this->data[$offset])){
+			$a =null;
+			return $a;
+		}
+		if(is_callable($this->data[$offset]) || (is_object($this->data[$offset]) && method_exists($this->data[$offset], '__invoke'))) return $this->data[$offset]($this);
+		return $this->data[$offset];
+	}           //=$this['zz']
+	/**
+	 * @inheritDoc
+	 */
 	public function offsetExists($offset): bool{ return isset($this->data[$offset]); }       //isset($this['xx']
+	/**
+	 * @inheritDoc
+	 */
 	public function offsetUnset($offset): void{ unset($this->data[$offset]); }                //unset($this['xx']
-	////php5.2+?
-	//public function __toString(){
-	//	//if(isset($this->data['__toString'])) return $this->data['__toString'];
-	//	return (null === $this->data) ?'' :json_encode($this->data, JSON_UNESCAPED_UNICODE);
-	//} //echo $this
 	//php5.3
 	public function __invoke(...$args){//php7
 		switch(func_num_args()){
@@ -30,7 +50,8 @@ trait o2{
 				return $this->data;
 			case 1:// $this($x)
 				$this->data = $args[0];
-				return $this;
+				//return $this;
+				break;
 			default:// =$this($x, $y, $z , ...)
 				$r = [];
 				foreach($args as $arg){
@@ -38,5 +59,8 @@ trait o2{
 				}
 				return $r;
 		}
+	}
+	public function __debugInfo():array{
+		return $this->data;
 	}
 }

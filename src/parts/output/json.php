@@ -8,25 +8,23 @@
 
 namespace nx\parts\output;
 
-use nx\helpers\output;
-
 /**
  * @method mixed out()
  * @method header($headers=[])
  */
-trait rest{
+trait json{
 	use http;
 
-	protected function nx_parts_output_rest(): ?\Generator{
+	protected function nx_parts_output_json(): ?\Generator{
 		$http = $this->nx_parts_output_http();
 		$http->current();
 		$this->out->setRenderCallback(function($r){
 			if(!is_null($r)){
 				header('Content-Type:application/json; charset=UTF-8');
 				try{
-					echo json_encode($r, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE);
+					echo json_encode($r, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 				}catch(\JsonException){
-					echo "Error Format Output.";
+					header("HTTP/1.1 500 Error Output Format.");
 				}
 			}
 		});

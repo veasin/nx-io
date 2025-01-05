@@ -10,6 +10,6 @@ io for nx
 
 ```php
 class demo extends nx\app{
-    use nx\parts\output\rest;
+    use nx\parts\output\json;
 }
 ```
