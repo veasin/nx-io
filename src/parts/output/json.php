@@ -19,8 +19,8 @@ trait json{
 		$http = $this->nx_parts_output_http();
 		$http->current();
 		$this->out->setRenderCallback(function($r){
-			if(!is_null($r)){
-				header('Content-Type:application/json; charset=UTF-8');
+			if(null !==$r){
+				header('Content-Type: application/json; charset=UTF-8');
 				try{
 					echo json_encode($r, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 				}catch(\JsonException){
